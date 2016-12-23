@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'pry'
 
 class LineItemsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -17,9 +18,14 @@ class LineItemsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should create line_item' do
     assert_difference('LineItem.count') do
-      post '/line_items', params: { product_id: products(:ruby).id }
+      post line_items_url, params: { product_id: products(:ruby).id }
     end
-    assert_redirected_to cart_path(LineItem.last.cart)
+
+    follow_redirect!
+
+    #assert_redirected_to cart_path(LineItem.last.cart)
+    assert_select 'h2', 'Your Cart'
+    assert_select 'td', "Programming Ruby 1.9"
   end
 
   test 'should show line_item' do
